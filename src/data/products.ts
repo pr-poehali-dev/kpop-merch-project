@@ -10,6 +10,7 @@ export interface Product {
   inStock: boolean;
   isNew?: boolean;
   isSale?: boolean;
+  description: string;
 }
 
 export interface Category {
@@ -32,6 +33,8 @@ export const products: Product[] = [
     rating: 5,
     inStock: true,
     isSale: true,
+    description:
+      "Полный студийный альбом группы BTS с 20 треками. Включает хиты 'ON', 'Black Swan' и 'My Time'. Наполнение: скоро",
   },
   {
     id: 2,
@@ -43,6 +46,8 @@ export const products: Product[] = [
     rating: 5,
     inStock: true,
     isNew: true,
+    description:
+      "Дебютный полноформатный альбом BLACKPINK с треками 'How You Like That', 'Ice Cream', 'Lovesick Girls'. Наполнение: скоро",
   },
   {
     id: 3,
@@ -53,6 +58,8 @@ export const products: Product[] = [
     category: "albums",
     rating: 5,
     inStock: true,
+    description:
+      "Третий полный альбом TWICE с заглавным треком 'Scientist' и 16 яркими композициями. Наполнение: скоро",
   },
   {
     id: 4,
@@ -63,6 +70,8 @@ export const products: Product[] = [
     category: "albums",
     rating: 5,
     inStock: true,
+    description:
+      "Мини-альбом Stray Kids с мощными треками включая заглавный 'CIRCUS' и яркие B-side композиции. Наполнение: скоро",
   },
   {
     id: 5,
@@ -73,6 +82,8 @@ export const products: Product[] = [
     category: "lightsticks",
     rating: 5,
     inStock: true,
+    description:
+      "Официальный лайтстик BTS четвертого поколения с Bluetooth подключением и синхронизацией с концертами. Наполнение: скоро",
   },
   {
     id: 6,
@@ -83,6 +94,8 @@ export const products: Product[] = [
     category: "lightsticks",
     rating: 5,
     inStock: true,
+    description:
+      "Стильный лайтстик BLACKPINK в фирменном розово-черном дизайне с LED подсветкой и управлением через приложение. Наполнение: скоро",
   },
   {
     id: 7,
@@ -95,6 +108,8 @@ export const products: Product[] = [
     rating: 4,
     inStock: true,
     isSale: true,
+    description:
+      "Уютная толстовка BTS в фирменном фиолетовом цвете с логотипом группы. Материал: 80% хлопок, 20% полиэстер. Наполнение: скоро",
   },
   {
     id: 8,
@@ -106,6 +121,8 @@ export const products: Product[] = [
     rating: 5,
     inStock: true,
     isNew: true,
+    description:
+      "Коллекционный набор фотокарт TWICE из последнего альбома. 9 карт всех участниц в высоком качестве печати. Наполнение: скоро",
   },
 ];
 

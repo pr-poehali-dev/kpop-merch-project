@@ -71,6 +71,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {product.title}
         </h3>
 
+        {/* Description */}
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+          {product.description}
+        </p>
+
         {/* Rating */}
         <div className="flex items-center gap-1 mb-3">
           {renderStars(product.rating)}

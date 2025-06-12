@@ -1,4 +1,4 @@
-import { Heart, Mail, Phone, MapPin } from "lucide-react";
+import { Heart, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -34,10 +34,10 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-6">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">K</span>
+                <span className="text-white font-bold text-sm">L</span>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                K-POP STORE
+                Lexxie store
               </span>
             </div>
             <p className="text-gray-400 mb-4">
@@ -134,13 +134,14 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
                 <Mail className="w-5 h-5" />
-                <span>hello@kpopstore.ru</span>
+                <span>support@lexxie.store</span>
               </div>
               <div className="flex items-start space-x-3 text-gray-400">
-                <MapPin className="w-5 h-5 mt-1" />
+                <Mail className="w-5 h-5 mt-1" />
                 <span>
-                  Москва, ул. Тверская, 1<br />
-                  Ежедневно 10:00 - 22:00
+                  Интернет-магазин работает 24/7
+                  <br />
+                  Поддержка: пн-пт 10:00 - 18:00
                 </span>
               </div>
             </div>
@@ -151,7 +152,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 K-POP Store. Все права защищены.
+              © 2024 Lexxie store. Все права защищены.
             </p>
             <div className="flex items-center space-x-6 text-sm text-gray-400">
               <a href="#" className="hover:text-white transition-colors">

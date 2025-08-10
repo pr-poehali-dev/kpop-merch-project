@@ -1,163 +1,256 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import ProductCard from "@/components/ProductCard";
-import CategoryCard from "@/components/CategoryCard";
-import Footer from "@/components/Footer";
-import { products, categories } from "@/data/products";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Award, Truck } from "lucide-react";
+import React, { useState, useMemo } from 'react';
+import Header from '@/components/Header';
+import SearchAndFilters from '@/components/SearchAndFilters';
+import ProductCard from '@/components/ProductCard';
+import Cart from '@/components/Cart';
+import Checkout from '@/components/Checkout';
+import VipProgram from '@/components/VipProgram';
+import { products } from '@/data/products';
+import { Product, Order } from '@/types';
+import { Star, Award, Truck, Crown } from 'lucide-react';
 
 const Index = () => {
-  const featuredProducts = products.slice(0, 8);
-  const newProducts = products.filter((p) => p.isNew);
-  const saleProducts = products.filter((p) => p.isSale);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedArtist, setSelectedArtist] = useState('all');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isVipOpen, setIsVipOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Filter products based on search and filters
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          product.artist.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesArtist = selectedArtist === 'all' || product.artist === selectedArtist;
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      
+      return matchesSearch && matchesCategory && matchesArtist && matchesPrice;
+    });
+  }, [searchTerm, selectedCategory, selectedArtist, priceRange]);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleOrderComplete = (order: Order) => {
+    console.log('Order completed:', order);
+    // Here you would typically send the order to your backend
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      <Hero />
+      <Header 
+        onCartClick={() => setIsCartOpen(true)}
+        onVipClick={() => setIsVipOpen(true)}
+      />
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Быстрая доставка</h3>
-              <p className="text-gray-600">Доставка по России от 1-3 дней</p>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            EXPERIMENTE.STORE
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 opacity-90">
+            Official EXPERIMENT ENTERTAINMENT Store
+          </p>
+          <p className="text-lg mb-8 opacity-80 max-w-2xl mx-auto">
+            Discover exclusive merchandise from TEDDIBEAR, 2COOL (RONIE, LUNNAH, AERIN), NO1CE, and Jonhie
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+              <Truck className="w-4 h-4 mr-2" />
+              Free Worldwide Shipping
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">100% оригинал</h3>
-              <p className="text-gray-600">
-                Только подлинные товары от официальных дистрибьюторов
-              </p>
+            <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+              <Award className="w-4 h-4 mr-2" />
+              100% Authentic
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Лучшие цены</h3>
-              <p className="text-gray-600">
-                Конкурентные цены и регулярные акции
-              </p>
+            <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+              <Crown className="w-4 h-4 mr-2" />
+              VIP Rewards
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-16">
+      {/* Search and Filters */}
+      <SearchAndFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        selectedArtist={selectedArtist}
+        onArtistChange={setSelectedArtist}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+      />
+
+      {/* Products Section */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Популярные категории
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Исследуй наш широкий ассортимент K-POP товаров от любимых артистов
-              и групп
-            </p>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Official Merchandise
+              </h2>
+              <p className="text-gray-600 mt-2">
+                {filteredProducts.length} products available
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-gray-400 mb-4">
+                <Star className="w-16 h-16 mx-auto mb-4" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
+              <p className="text-gray-500">Try adjusting your search or filters</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onViewDetails={handleProductClick}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Featured Artists Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Artists</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Meet the talented artists from EXPERIMENT ENTERTAINMENT
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {['TEDDIBEAR', 'RONIE', 'LUNNAH', 'AERIN', 'NO1CE', 'Jonhie'].map((artist) => (
+              <div key={artist} className="text-center group cursor-pointer">
+                <div className="w-20 h-20 mx-auto mb-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-white font-bold text-lg">
+                    {artist.charAt(0)}
+                  </span>
+                </div>
+                <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                  {artist}
+                </h3>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* New Products Section */}
-      {newProducts.length > 0 && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  Новинки
-                </h2>
-                <p className="text-gray-600">
-                  Свежие поступления от популярных артистов
-                </p>
-              </div>
-              <Button variant="outline" className="hidden sm:flex">
-                Смотреть все
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {newProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Sale Products Section */}
-      {saleProducts.length > 0 && (
-        <section className="py-16 bg-gradient-to-r from-red-50 to-pink-50">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  🔥 Горячие скидки
-                </h2>
-                <p className="text-gray-600">
-                  Ограниченные предложения на популярные товары
-                </p>
-              </div>
-              <Button className="hidden sm:flex bg-red-500 hover:bg-red-600">
-                Все скидки
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {saleProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Featured Products Section */}
-      <section className="py-16 bg-white">
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Рекомендуем
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Самые популярные товары среди поклонников K-POP
-            </p>
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4">EXPERIMENTE.STORE</h3>
+              <p className="text-gray-400">
+                Official merchandise store for EXPERIMENT ENTERTAINMENT artists.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Customer Service</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Contact Us</li>
+                <li>Shipping Info</li>
+                <li>Returns</li>
+                <li>FAQ</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Artists</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>TEDDIBEAR</li>
+                <li>2COOL</li>
+                <li>NO1CE</li>
+                <li>Jonhie</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Connect</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Instagram</li>
+                <li>Twitter</li>
+                <li>YouTube</li>
+                <li>TikTok</li>
+              </ul>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            >
-              Посмотреть весь каталог
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 EXPERIMENT ENTERTAINMENT. All rights reserved.</p>
           </div>
         </div>
-      </section>
+      </footer>
 
-      <Footer />
+      {/* Modals */}
+      <Cart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onCheckout={() => {
+          setIsCartOpen(false);
+          setIsCheckoutOpen(true);
+        }}
+      />
+
+      <Checkout
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        onOrderComplete={handleOrderComplete}
+      />
+
+      <VipProgram
+        isOpen={isVipOpen}
+        onClose={() => setIsVipOpen(false)}
+      />
+
+      {/* Product Details Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setSelectedProduct(null)} />
+          <div className="relative min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+              <div className="grid md:grid-cols-2 gap-6 p-6">
+                <img
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">{selectedProduct.name}</h2>
+                    <p className="text-purple-600 font-medium">{selectedProduct.artist}</p>
+                  </div>
+                  <p className="text-gray-600">{selectedProduct.description}</p>
+                  <div className="text-2xl font-bold text-purple-600">${selectedProduct.price}</div>
+                  <button
+                    onClick={() => setSelectedProduct(null)}
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

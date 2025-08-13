@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Filter, X } from 'lucide-react';
-import { categories, artists } from '@/data/products';
+import { categories, artists, regions } from '@/data/products';
 
 interface SearchAndFiltersProps {
   searchTerm: string;
@@ -9,6 +9,8 @@ interface SearchAndFiltersProps {
   onCategoryChange: (category: string) => void;
   selectedArtist: string;
   onArtistChange: (artist: string) => void;
+  selectedRegion: string;
+  onRegionChange: (region: string) => void;
   priceRange: [number, number];
   onPriceRangeChange: (range: [number, number]) => void;
   showFilters: boolean;
@@ -22,6 +24,8 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   onCategoryChange,
   selectedArtist,
   onArtistChange,
+  selectedRegion,
+  onRegionChange,
   priceRange,
   onPriceRangeChange,
   showFilters,
@@ -31,10 +35,11 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     onSearchChange('');
     onCategoryChange('all');
     onArtistChange('all');
+    onRegionChange('all');
     onPriceRangeChange([0, 100]);
   };
 
-  const hasActiveFilters = searchTerm || selectedCategory !== 'all' || selectedArtist !== 'all' || priceRange[0] > 0 || priceRange[1] < 100;
+  const hasActiveFilters = searchTerm || selectedCategory !== 'all' || selectedArtist !== 'all' || selectedRegion !== 'all' || priceRange[0] > 0 || priceRange[1] < 100;
 
   return (
     <div className="bg-white border-b border-gray-200">
@@ -71,7 +76,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
         {/* Filters Panel */}
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-50 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50 rounded-lg">
             {/* Category Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -86,6 +91,25 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 {categories.map(category => (
                   <option key={category.id} value={category.id}>
                     {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Region Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Region
+              </label>
+              <select
+                value={selectedRegion}
+                onChange={(e) => onRegionChange(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="all">All Regions</option>
+                {regions.map(region => (
+                  <option key={region.id} value={region.id}>
+                    {region.name}
                   </option>
                 ))}
               </select>

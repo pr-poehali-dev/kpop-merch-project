@@ -1,14 +1,18 @@
 import React from 'react';
-import { ShoppingCart, User, Heart } from 'lucide-react';
+import { ShoppingCart, User, Heart, LogIn } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 interface HeaderProps {
   onCartClick: () => void;
   onVipClick: () => void;
+  onAuthClick: () => void;
+  onProfileClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick, onVipClick }) => {
+const Header: React.FC<HeaderProps> = ({ onCartClick, onVipClick, onAuthClick, onProfileClick }) => {
   const { totalItems } = useCart();
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header className="bg-white shadow-lg border-b-2 border-purple-500">
@@ -42,13 +46,37 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onVipClick }) => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-4">
-            <button
-              onClick={onVipClick}
-              className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
-            >
-              <User className="w-6 h-6" />
-              <span className="hidden md:block">VIP</span>
-            </button>
+            {isAuthenticated ? (
+              <>
+                <button
+                  onClick={onVipClick}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
+                >
+                  <User className="w-6 h-6" />
+                  <span className="hidden md:block">VIP</span>
+                </button>
+                
+                <button
+                  onClick={onProfileClick}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-semibold">
+                      {user?.firstName?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                  <span className="hidden md:block">{user?.firstName}</span>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={onAuthClick}
+                className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
+              >
+                <LogIn className="w-6 h-6" />
+                <span className="hidden md:block">Sign In</span>
+              </button>
+            )}
             
             <button className="text-gray-700 hover:text-purple-600 transition-colors">
               <Heart className="w-6 h-6" />

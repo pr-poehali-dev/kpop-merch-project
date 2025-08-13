@@ -5,6 +5,8 @@ import ProductCard from '@/components/ProductCard';
 import Cart from '@/components/Cart';
 import Checkout from '@/components/Checkout';
 import VipProgram from '@/components/VipProgram';
+import AuthModal from '@/components/AuthModal';
+import UserProfile from '@/components/UserProfile';
 import { products } from '@/data/products';
 import { Product, Order } from '@/types';
 import { Star, Award, Truck, Crown } from 'lucide-react';
@@ -13,11 +15,14 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedArtist, setSelectedArtist] = useState('all');
+  const [selectedRegion, setSelectedRegion] = useState('all');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [showFilters, setShowFilters] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isVipOpen, setIsVipOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Filter products based on search and filters
@@ -27,11 +32,14 @@ const Index = () => {
                           product.artist.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
       const matchesArtist = selectedArtist === 'all' || product.artist === selectedArtist;
+      const matchesRegion = selectedRegion === 'all' || 
+                           (selectedRegion === 'russian' && (product as any).region === 'Russian Artists') ||
+                           (selectedRegion === 'korean' && !(product as any).region);
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
       
-      return matchesSearch && matchesCategory && matchesArtist && matchesPrice;
+      return matchesSearch && matchesCategory && matchesArtist && matchesRegion && matchesPrice;
     });
-  }, [searchTerm, selectedCategory, selectedArtist, priceRange]);
+  }, [searchTerm, selectedCategory, selectedArtist, selectedRegion, priceRange]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -47,6 +55,8 @@ const Index = () => {
       <Header 
         onCartClick={() => setIsCartOpen(true)}
         onVipClick={() => setIsVipOpen(true)}
+        onAuthClick={() => setIsAuthOpen(true)}
+        onProfileClick={() => setIsProfileOpen(true)}
       />
 
       {/* Hero Section */}
@@ -59,7 +69,7 @@ const Index = () => {
             Official EXPERIMENT ENTERTAINMENT Store
           </p>
           <p className="text-lg mb-8 opacity-80 max-w-2xl mx-auto">
-            Discover exclusive merchandise from TEDDIBEAR, 2COOL (RONIE, LUNNAH, AERIN), NO1CE, and Jonhie
+            Discover exclusive merchandise from Korean and Russian artists: TEDDIBEAR, ROYAL CRUSH, 2COOL, NO1CE, Jonhie, and REAALQUEENZ
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
@@ -86,6 +96,8 @@ const Index = () => {
         onCategoryChange={setSelectedCategory}
         selectedArtist={selectedArtist}
         onArtistChange={setSelectedArtist}
+        selectedRegion={selectedRegion}
+        onRegionChange={setSelectedRegion}
         priceRange={priceRange}
         onPriceRangeChange={setPriceRange}
         showFilters={showFilters}
@@ -134,23 +146,48 @@ const Index = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Artists</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Meet the talented artists from EXPERIMENT ENTERTAINMENT
+              Meet the talented artists from EXPERIMENT ENTERTAINMENT and our Russian partners
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {['TEDDIBEAR', 'RONIE', 'LUNNAH', 'AERIN', 'NO1CE', 'Jonhie'].map((artist) => (
-              <div key={artist} className="text-center group cursor-pointer">
-                <div className="w-20 h-20 mx-auto mb-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-lg">
-                    {artist.charAt(0)}
-                  </span>
-                </div>
-                <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
-                  {artist}
-                </h3>
+          <div className="space-y-8">
+            {/* Korean Artists */}
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Korean Artists</h3>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                {['TEDDIBEAR', 'ROYAL CRUSH', 'RONIE', 'LUNNAH', 'AERIN', 'NO1CE', 'Jonhie'].map((artist) => (
+                  <div key={artist} className="text-center group cursor-pointer">
+                    <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-white font-bold text-sm">
+                        {artist.charAt(0)}
+                      </span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                      {artist}
+                    </h4>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            {/* Russian Artists */}
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Russian Artists</h3>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {['REAALQUEENZ'].map((artist) => (
+                  <div key={artist} className="text-center group cursor-pointer">
+                    <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-white font-bold text-sm">
+                        {artist.charAt(0)}
+                      </span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors">
+                      {artist}
+                    </h4>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -162,7 +199,7 @@ const Index = () => {
             <div>
               <h3 className="text-xl font-bold mb-4">EXPERIMENTE.STORE</h3>
               <p className="text-gray-400">
-                Official merchandise store for EXPERIMENT ENTERTAINMENT artists.
+                Official merchandise store for EXPERIMENT ENTERTAINMENT artists and partners.
               </p>
             </div>
             <div>
@@ -175,22 +212,29 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Artists</h4>
+              <h4 className="font-semibold mb-4">Korean Artists</h4>
               <ul className="space-y-2 text-gray-400">
                 <li>TEDDIBEAR</li>
+                <li>ROYAL CRUSH</li>
                 <li>2COOL</li>
                 <li>NO1CE</li>
                 <li>Jonhie</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Connect</h4>
+              <h4 className="font-semibold mb-4">Russian Artists</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>Instagram</li>
-                <li>Twitter</li>
-                <li>YouTube</li>
-                <li>TikTok</li>
+                <li>REAALQUEENZ</li>
               </ul>
+              <div className="mt-6">
+                <h4 className="font-semibold mb-2">Connect</h4>
+                <ul className="space-y-2 text-gray-400">
+                  <li>Instagram</li>
+                  <li>Twitter</li>
+                  <li>YouTube</li>
+                  <li>TikTok</li>
+                </ul>
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
@@ -220,6 +264,16 @@ const Index = () => {
         onClose={() => setIsVipOpen(false)}
       />
 
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
+
+      <UserProfile
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+      />
+
       {/* Product Details Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -236,6 +290,9 @@ const Index = () => {
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">{selectedProduct.name}</h2>
                     <p className="text-purple-600 font-medium">{selectedProduct.artist}</p>
+                    {(selectedProduct as any).region && (
+                      <p className="text-sm text-red-600 font-medium">{(selectedProduct as any).region}</p>
+                    )}
                   </div>
                   <p className="text-gray-600">{selectedProduct.description}</p>
                   <div className="text-2xl font-bold text-purple-600">${selectedProduct.price}</div>
